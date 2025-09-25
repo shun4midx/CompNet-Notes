@@ -12,7 +12,7 @@ For each chapter, I will attach their chapter summary within the `Summaries` fol
 In the case where the full chapter is not complete yet, I may sometimes upload a temporary file titled `[Part<part>]compnet_ch<chapter>` with the corresponding file extension. **These files will be removed once the full chapter is completed.**
 
 ### TBD: Condensed Midterm/Final Note Sheet
-It is not certain whether I will upload this sheet to my public notes, for obvious reasons. If I do, I usually use GoodNotes and handwrite them, and will upload them to a separate folder titled `Exams`. I will not upload the GoodNotes file and only upload the PDF file.
+It is not certain whether I will upload this sheet to my public notes, for obvious reasons. If I do, I usually use GoodNotes and handwrite them, and will upload them to a separate folder titled `Exams`. I will not upload the GoodNotes file, I will only upload the PDF file.
 
 ## Color Schemes
 It is not a secret I like the [Pink/Purple/Blue colorscheme](https://github.com/shun4midx/Pink-Purple-Blue-VSCode-Theme). As a result, my more recent LaTeX files for notes all follow this aesthetic, typically with **blue boxes for headings**, **purple boxes for subheadings**, and **pink boxes for important concepts**. I also typically use yellow highlighter and very rarely green if there is too much yellow. 
