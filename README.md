@@ -15,9 +15,9 @@ In the case where the full chapter is not complete yet, I may sometimes upload a
 It is not certain whether I will upload this sheet to my public notes, for obvious reasons. If I do, I usually use GoodNotes and handwrite them, and will upload them to a separate folder titled `Exams`. I will not upload the GoodNotes file, I will only upload the PDF file.
 
 ## Color Schemes
-It is not a secret I like the [Pink/Purple/Blue colorscheme](https://github.com/shun4midx/Pink-Purple-Blue-VSCode-Theme). As a result, my more recent LaTeX files for notes all follow this aesthetic, typically with **blue boxes for headings**, **purple boxes for subheadings**, and **pink boxes for important concepts**. I also typically use yellow highlighter and very rarely green if there is too much yellow. 
+It is not a secret I like the [Pink/Purple/Blue color scheme](https://github.com/shun4midx/Pink-Purple-Blue-VSCode-Theme). As a result, my more recent LaTeX files for notes all follow this aesthetic, typically with **blue boxes for headings**, **purple boxes for subheadings**, and **pink boxes for important concepts**. I also typically use yellow highlighter and very rarely green if there is too much yellow. 
 
-If for some reason you do not like this colorscheme, all boxes and highlights are drawn via commands in `shun4colors.tex`, so feel free to clone this repo and modify the colors in the commands yourself for personal use. On the other hand, if for some reason you like the color scheme I use, feel free to use my usual import files for personal use.
+If for some reason you do not like this color scheme, all boxes and highlights are drawn via commands in `shun4colors.tex`, so feel free to clone this repo and modify the colors in the commands yourself for personal use. On the other hand, if for some reason you like the color scheme I use, feel free to use my usual import files for personal use.
 
 Here are two sample pages (one front page and one middle page) from `Summaries/compnet_ch1.pdf` with how my color scheme typically looks like:
 
