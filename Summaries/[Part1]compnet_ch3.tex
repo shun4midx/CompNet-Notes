@@ -66,7 +66,7 @@
 \noindent The \textbf{UDP checksum} provides simple error detection. \hl{Its purpose is to detect bit errors, not correct them.} \\
 
 \pinkbox{Overview}{
-  \noindent It is computed by treating the UDP segment as a sequence of 16-bit integers, summing them using \textbf{one’s-complement arithmetic}, and taking the \textbf{one’s complement} of the result.
+  \noindent It is computed by treating the UDP segment as a sequence of 16-bit integers, summing them using \textbf{one's-complement arithmetic}, and taking the \textbf{one's complement} of the result. \\
 
   \noindent At the receiver, all words (including the checksum) are summed again---if the result is all 1s, no error is detected.
 }
