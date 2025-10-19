@@ -1,0 +1,876 @@
+\documentclass[12pt,a4paper]{article}
+\input{shun4imports}
+\input{shun4colors}
+\input{shun4cmds}
+
+\lhead{Computer Networks}
+\chead{Midterm Summary}
+\rhead{Shun (@shun4midx)}
+
+\begin{document}
+\begin{center}
+  {\Large \bf Computer Networks: Midterm Summary}\\[8pt]
+  \textbf{Author:} Shun (@shun4midx)
+\end{center}
+
+\begin{tcolorbox}[colframe=green!60!blue, colback=green!20, title=\section*{Chapter 1 Summary}]
+\end{tcolorbox}
+
+\bluebox{\section*{Basic Definitions}}
+\purplebox{\subsection*{Overview}}
+\noindent The internet is a ``network of networks'' \textbf{(Interconnected ISPs, i.e. Internet Service Providers)}, where a \textbf{network} is a collection of devices, routers, and links \emph{managed by an organization}
+\vspace{0.5em}\begin{itemize}
+    \item \textbf{Hosts} = End systems
+    \item \textbf{Packet Switches} = Forward packets (chunks of data), e.g. \hlit{routers, switches}
+    \item \textbf{Communication Links}: E.g. \hlit{fiber, copper, radio, satellite}; \hl{\textbf{transmission rate} = \emph{bandwidth}} in bps
+    \item \textbf{Internet Services}: \textbf{Infrastructure} to provide services to apps (e.g. web, email, streaming, etc), \textbf{programming interface} such as \emph{hooks} to ``connect'' and \emph{service}
+\end{itemize}
+
+\pinkbox{Protocol}{
+    \textbf{Protocols} define the \textbf{format, order} of \textbf{messages sent and received} among network entities, and \textbf{actions taken} on message transmission, receipt.
+}
+
+\bluebox{\section*{Network Edge}}
+\purplebox{\subsection*{Access Networks}}
+\noindent \textbf{Access networks} are how end systems connect to \textbf{edge routers}. 
+
+\vspace{0.5em}\begin{itemize}
+    \item \textbf{HFC} (Hybrid Fiber Coax): A network of \emph{fiber} (to the \textbf{neighborhood node}) and \emph {shared coax} (to homes) attaches homes to the ISP router at the \textbf{cable headend}; \hl{Higher downstream transmission} \hl{compared to upstream}
+        \begin{itemize}
+            \item Uses \textbf{cable-based access} via \textbf{FDM} (frequency division multiplexing), i.e. different channels are transmitted in different frequency bands
+        \end{itemize}
+    \item \textbf{DSL} (Digital Subscriber Line): Uses existing \hlit{telephone line} to central office \textbf{DSLAM} (Data connects to internet, voice connects to telephone net); Higher downstream transmission compared to upstream
+\end{itemize}
+
+\noindent There are two main kinds of \textbf{wireless access networks} that connect end systems to router:
+\begin{itemize}
+    \item \textbf{WLANs} (Wireless Local Area Networks): Typically within or around building, e.g. \hlit{Wi-Fi}. Can have low or high transmission rates.
+    \item \textbf{Wide-Area Cellular Access Networks}: Provided by \emph{mobile, cellular network operator}, typically medium transmission rate (around \textbf{tens of Mbps}), e.g. \hlit{4G/5G cellular networks}
+\end{itemize}
+
+\pinkbox{Examples of Access Networks}{
+    \begin{itemize}
+        \item \textbf{Home Access:} DSL, HFC/Cable
+        \item \textbf{Wide-area Wireless:} 4G LTE, 5G NR.
+    \end{itemize}
+}
+
+\pinkbox{Local Networks (LANs, Inside Premises)}{
+    \begin{itemize}
+        \item \textbf{Home LAN:} Wi-Fi + Ethernet switch + NAT/firewall (often one gateway).
+        \item \textbf{Enterprise LAN:} Switched Ethernet access + Managed Wi-Fi.
+    \end{itemize}
+}
+
+\purplebox{\subsection*{Physical Media Links}}
+\pinkbox{Physical Media Links}{
+    A \textbf{physical link} is what lies between transmitter and receiver
+    \begin{itemize}
+        \item \textbf{Guided}: Signals propagate in \textbf{solid media}, e.g. \hlit{twisted pair/TP} (two insulated copper wires), \hlit{coaxial cable} (bidirectional, two concentric copper conductors), \hlit{fiber optic cable} \hl{(high speed operation, low error)}.
+        \item \textbf{Unguided}: Signals propagate \textbf{freely}, e.g. \textbf{radio}, such as \hlit{Wi-Fi, wide-area, bluetooth,} \hlit{terrestrial microwave, satellite}
+    \end{itemize}
+}
+
+\vspace{1.0em}\bluebox{\section*{Network Core}}
+\purplebox{\subsection*{Packet Switching and Circuit Switching}}
+\noindent There are two key network-core functions:
+\vspace{0.5em}\begin{itemize}
+    \item \hl{\textbf{Forwarding} (i.e. \emph{switching}): \emph{Local}}, moves packets from router's input link to output link
+    \item \hl{\textbf{Routing}: \emph{Global} action}, determines best paths taken by packets
+\end{itemize}
+
+\pinkbox{Packet vs. Circuit Switching}{
+    \textbf{Packet switching:} Messages $\to$ packets; each hop does \textit{store-and-forward}. It \textbf{queues} your desired packets into a buffer whenever \hl{\textbf{arrival rate $>$ transmission rate}}.
+    \begin{itemize}    
+        \item \textbf{Pros}: Efficient sharing, good for bursty traffic, no call setup.
+        \item \textbf{Cons}: Queueing delay, possible loss under congestion.
+    \end{itemize}
+    \textbf{Circuit switching:} End-to-end resources reserved for \textbf{call between source and destination}, i.e. you posses the entire line at a time.
+    \begin{itemize}
+        \item \textbf{Pros}: Predictable performance.
+        \item \textbf{Cons}: Idle when unused, setup overhead.
+    \end{itemize}
+}
+
+\pinkbox{Example Calculation}{
+    \textbf{Problem:} Say we have a 1 Gb/s output link, and each user uses 100 Mb/s when active. Each user is active around 10\% of the time. How many users can use this network under circuit-switching and packet-switching? \\
+
+    \textbf{Circuit-Switching:} Each user possesses the \emph{entire line at a time}, so $\frac{1 \text{Gb/s}}{100 \text{Mb/s}} = \boxed{10 \text{ users}}$ \\
+
+    \textbf{Packet-Switching:} Say there are 35 users, then by binomial distribution, the probability that \hl{\textbf{more than 10} (maximum amount which we can share) are active at the same time} is less than $0.0004$. This means, we can hold 35 users with only $0.0004$ of the data not being able to be sent.
+}
+
+\vspace{0.5em}\purplebox{\subsection*{Internet Structure}}
+
+\noindent Intuitively, the reasoning is we require all hosts to be able to interconnect with each other, with as few connections as possible. As we cannot have one big global ISP (\textbf{Internet Service Provider}) in practice, we end up creating \textbf{several ISPs}, including \emph{regional ISPs} and other \textbf{``tier-1'' commercial ISPs}, e.g. \emph{AT\&T, NTT}, which regional ISPs connect to. Then, we \hl{interconnect them with \textbf{IXPs (Internet Exchange Points)}}. Otherwise, a \textbf{content provider network} (e.g. Google), which is a private network, connects its data center to the Internet, often \hl{\textbf{bypassing most ISPs}}. Hence why we say the internet is a \emph{``network of networks''}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{ch1_img/internet_structure.png}
+    \caption{A visual for internet structure.}
+    \label{fig:internet_structure}
+\end{figure}
+
+\vspace{1.0em}\bluebox{\section*{Performance Loss: Delay and Throughput}}
+\purplebox{\subsection*{Packet Delay}}
+\noindent There are four main types of packet delay, as better shown in the figure below.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.44\textwidth]{ch1_img/packet_delay.png}
+    \caption{Depiction of the four main sources of packet delay}
+    \label{fig:packet_delay}
+\end{figure}
+
+\pinkbox{Packet Delay Formula}{
+    In general, we have:
+    $$
+    \hl{\boxed{d_{\text{nodal}} = d_{\text{proc}} + d_{\text{queue}} + d_{\text{trans}} + d_{\text{prop}}}}
+    $$
+
+    \begin{itemize}
+        \item \ghl{\textbf{Nodal Processing \emph{(Const)}:}} When checking bit errors and determining \emph{output link}; typically within \emph{microsecs}
+        \item \textbf{Queueing Delay:} Time waiting at output link for transmission, depends on the congestion level of the router
+        \item \textbf{Transmission Delay:} \hl{$d_{\text{trans}} = \frac{L}{R}$}, $L$ = \emph{packet length (bits)}, $R$ = link \emph{transmission rate (b/s)}
+        \item \ghl{\textbf{Propagation Delay \emph{(Const)}:}} \hl{$d_{\text{prop}} = \frac{d}{s}$}, $d$ = \emph{length of physical link}, $s$ = \emph{propagation speed} ($\approx 2 \times 10^8$ m/s)
+    \end{itemize}
+}
+
+\pinkbox{Traffic Intensity (Packet Queueing Delay)}{
+    Define $a$ as the average packet \emph{arrival rate}, $L$ as the packet length in bits, and $R$ as the link bandwidth (bit transmission rate). We define the \textbf{traffic intensity} as follows:
+
+    $$
+    \frac{L \cdot a}{R} = \frac{\text{arrival rate of bits}}{\text{service rate of bits}}
+    $$
+
+    \vspace{1.0em}Usually, traffic intensity could tell us certain info as follows:
+    \begin{itemize}
+        \item $\frac{La}{R} \approx 0$: average \emph{queueing delay is small}
+        \item $\frac{La}{R} \to 1$: average \emph{queueing delay is large}
+        \item $\frac{La}{R} > 1$: work arriving $>$ servicable work $\Rightarrow$ infinite delay!
+    \end{itemize}
+}
+
+\vspace{1.0em}\noindent In real life, we can use \texttt{traceroute <website>} in the terminal to measure internet delay. It will output the time elapsed for each (publically accessible) step required, to reach said website.
+
+\vspace{1.0em}\purplebox{\subsection*{Throughput}}
+\pinkbox{Throughput Definition}{\textbf{Throughput} is defined as the \textbf{rate} (bits/time) at which bits are being \textbf{sent} from sender to receiver.}
+
+\noindent In practice, $R_c$ or $R_s$, as demonstrated below, is the bottleneck. In extreme cases, $R$/(number of shared connections) may be the bottleneck. \hl{\textbf{The bottleneck is the minimum rate $R$}}.
+
+\vspace{-1.0em}\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.65\textwidth]{ch1_img/throughput.png}
+\end{figure}
+
+\vspace{1.0em}\bluebox{\section*{Network Security}}
+\noindent The main takeaway is the Internet was designed \textbf{without considering adverseries}, so it's \textbf{prone to attacks}.
+
+\vspace{0.5em}\pinkbox{Types of Attacks}{
+\begin{itemize}
+  \item \textbf{Denial of Service (DoS):} Overwhelm resources to block service
+  \item \textbf{Packet Sniffing:} Reads all packets (including passwords) in a network
+  \item \textbf{Spoofing:} Injection of packet with false sourcce address
+\end{itemize}
+}
+
+\pinkbox{Countermeasures}{
+\begin{itemize}
+  \item \textbf{Cryptography:} Encryption, authentication
+  \item \textbf{Integrity Checks:} Signatures to prevent and detect tampering
+  \item \textbf{Firewalls} to avoid DoS attacks and filter incoming packets
+\end{itemize}
+}
+
+\vspace{1.0em}\bluebox{\section*{Protocol Layers and Reference Models}}
+
+\noindent \textbf{Layering Principle:} Modular design; each layer offers services to the layer above and relies on services from the layer below. Then, change in layer service implementation is isolated from other layers.
+
+\vspace{0.5em}\pinkbox{Internet (TCP/IP) model: 5 layers}{
+\begin{enumerate}
+  \item \textbf{Application:} Supports network applications (e.g. \emph{HTTP, IMAP, SMTP, DNS})
+  \item \textbf{Transport:} Process-to-process data transfering (e.g. \emph{TCP, UDP})
+  \item \textbf{Network:} Routes datagrams from source to destination (e.g. \emph{IP, routing protocols})
+  \item \textbf{Link:} Transfers data between neighboring network elements (e.g. \emph{Ethernet, Wi-Fi, PPP})
+  \item \textbf{Physical:} bits ``on the wire''
+\end{enumerate}
+}
+
+\pinkbox{Encapsulation}{
+    As data travels down the stack, each layer \textbf{adds a header}. As data travels up, each layer \textbf{removes its header}. This crates a \textbf{link-layer frame} via what we call \textbf{encapsulation}.
+}
+
+\vspace{-1.0em}\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.65\textwidth]{ch1_img/encapsulation.png}
+\end{figure}
+
+\begin{tcolorbox}[colframe=green!60!blue, colback=green!20, title=\section*{Chapter 2 Summary}]
+\end{tcolorbox}
+
+\bluesec{Principles of Network Applications}
+
+\noindent The key idea is to enable programs to be able to run on \textbf{different end systems} --- network-core devices \textbf{do not run user applications}. \\
+
+\purplesec{Client-Server Paradigm}
+
+\noindent Here, we divide communication into two types of entities:
+
+\vspace{0.5em}\begin{itemize}
+  \item \textbf{Server:} \hl{\textbf{Always-on} host, \textbf{permanent IP} address}, \textit{often in data centers}
+  \item \textbf{Clients:} \textit{Communicate with server}, may be intermittently connected, may have dynamic IP addresses, \hlbf{do not communicate directly with each other}
+\end{itemize}
+
+\noindent Some examples of \hl{client-server paradigm are: \textit{HTTP, IMAP, FTP}} \\
+
+\purplesec{Peer-Peer (P2P) Architecture}
+
+\begin{itemize}
+  \item \textbf{No always-on server}: \textbf{arbitrary end systems} directly communicate
+  \item Peers request service from other peers, and provide service in return to other peers
+
+  $\Rightarrow$ \hl{\textbf{Self scalability} -- new peers bring \textbf{new service capacity and demands}}
+
+  \item Peers are \textit{intermittently connected} and \textit{change IP addresses}
+\end{itemize}
+
+\noindent An example of this is \hlit{P2P file sharing}. \\
+
+\purplesec{Process Communication and Addressing}
+
+\pinkbox{Definition of Processes}{
+  A \textbf{process} is a \textit{program} running within a \textit{host}.
+  \begin{itemize}
+    \item Within the \textit{\textbf{same host}}, two processes communicate using \textbf{inter-process communication}
+    \item Between \textit{\textbf{different hosts}}, they communicate by exchanging \textbf{messages}
+    \item \textbf{Client Process:} A process that \textit{\textbf{initiates} communication}
+    \item \textbf{Server Process:} A process that \textit{\textbf{waits} to be contacted}
+  \end{itemize}
+
+  P2P applications still have client and server processes, despite not having clients or servers.
+}
+
+\pinkbox{Sockets}{
+  A process \textit{sends or receives} messages to or from its \textbf{socket}. In between a sending and receiving socket, we require some \hlbf{transport infrastructure}.
+}
+
+\pinkbox{Addressing Processes}{
+  We need an \textbf{identifier} to receive addresses, which includes both the \textbf{(unique 32-bit) IP address} and \textbf{port numbers} needed for the process (since the same host may run many different processes).
+}
+
+\vspace{1.0em}
+\purplesec{Transport-Layer Services}
+
+\pinkbox{Application-Layer Protocol}{
+  An \hlbf{application-layer protocol} defines:
+  \begin{itemize}
+    \item \textbf{Types of messages exchanged} (e.g. request, response)
+    \item \textbf{Message Syntax}
+    \item \textbf{Message Semantics} (i.e. meaning of information in fields)
+    \item \textbf{Rules} for when to \textbf{send and respond} to messages
+  \end{itemize}
+
+  \noindent Examples of \textbf{open protocols} are \textit{HTTP, SMTP}. Examples of \textbf{proprietary protocols} are \textit{Skype, Zoom}.
+}
+
+\pinkbox{TCP vs UDP Services}{
+  TCP and UDP services can almost be seen as polar opposites:
+  \begin{itemize}
+    \item \hl{\textbf{TCP:} \textbf{Reliable transport} \textit{flow control, congestion control} (throttle sender when network} \hl{overloaded), connection-oriented \textbf{(setup required between client and server processes)}}
+    \item \textbf{TCP doesn't provide:} Timing, minimum throughput guarantee, security
+    \item \hl{\textbf{UDP:} \textbf{Unreliable data transfer} (may be not received), but typically \textbf{faster speeds}}
+    \item \textbf{UDP doesn't provide:} What TCP doesn't + what TCP does
+  \end{itemize}
+
+  \noindent Most applications want to use TCP, but interactive games and Internet telephony may use UDP.
+}
+
+\pinkbox{Transport Layer Security}{
+  \textbf{Transport Layer Security (TLS)} provides \textbf{encrypted} TCP connections and end-point authentication, since otherwise passwords are sent in plain text. It is implemented in the \textbf{application layer}.
+}
+
+\vspace{1.0em}
+\bluesec{Web and HTTP (HyperText Transfer Protocol)}
+
+\purplesec{Overview}
+
+\noindent\textbf{HTTP} is the web's \hlit{application-layer protocol} that uses the client/server model, where: \\
+
+\begin{itemize}
+  \item \textbf{Client:} Browser that requests/receives (using HTTP protocol), and displays web objects
+  \item \textbf{Server:} Web server sends (using HTTP protocol) objects in response to the requests
+\end{itemize}
+
+\noindent\hlbf{HTTP uses TCP} and does it in basically the following steps:
+\begin{itemize}
+  \item The client \textbf{initiates TCP connection} (creates a \textbf{socket}) to the server at \textbf{port 80}
+  \item The server \textbf{accepts TCP connection} from the client
+  \item HTTP messages are exchanged between the browser (HTTP client) and Web server (HTTP server)
+  \item \textbf{TCP connection closed}
+\end{itemize}
+
+\noindent \hl{Note, HTTP is \textbf{stateless} -- the server maintains \textbf{no information about past client requests}}. \\
+
+\purplesec{HTTP Connections: Persistent vs Non-Persistent}
+
+\pinkbox{Persistent vs Non-Persistent HTTP Connections}{
+  \renewcommand{\arraystretch}{1.1}
+  \setlength{\tabcolsep}{10pt}
+
+  \begin{center}
+    \begin{tabular}[t]{@{}p{0.46\textwidth}|p{0.46\textwidth}@{}}
+  \multicolumn{1}{c}{\textbf{Non-Persistent HTTP}} &
+  \multicolumn{1}{c}{\textbf{Persistent HTTP}} \\[0.5em]
+  \hline\\[-1.0em]
+  \begin{minipage}[t]{\linewidth}
+    \begin{enumerate}[leftmargin=*, topsep=0pt, itemsep=0.5em]
+      \item TCP connection opened
+      \item \textbf{At most one object} sent over TCP connection
+      \item TCP connection closed
+    \end{enumerate}
+  \end{minipage}
+  &
+  \begin{minipage}[t]{\linewidth}
+    \begin{enumerate}[leftmargin=*, topsep=0pt, itemsep=0.5em]
+      \item TCP connection opened to a server
+      \item \textbf{Multiple objects} can be sent over a TCP connection between client and that server
+      \item TCP connection closed
+    \end{enumerate}
+  \end{minipage}
+  \\
+  \end{tabular}
+  \end{center}
+
+  \vspace{0.5em}\hl{For non-persistent HTTP, downloading \textbf{multiple objects requires multiple connections.}}
+}
+
+\pinkbox{RTT}{
+  \textbf{RTT} is the time for a small packet to \textbf{travel from client to server and back}.
+}
+
+\pinkbox{HTTP Response Time Per Object}{
+  % Fill for nonpersistent vs persistent
+  For \textbf{non-persistent HTTP}, the HTTP response time \textbf{per object} is: \\
+  
+  {\centering
+  \includegraphics[width=0.35\textwidth]{ch2_img/nonpersistent_rtt.png}
+  \par
+  }
+  
+  \vspace{1.0em}Hence, \hl{\boxed{\text{\textbf{Non-persistent PER OBJECT} HTTP response time = \textbf{2RTT + File transmisison time}}}} \\
+
+  Similarly, for \textbf{persistent HTTP}, instead of per object, we can transmit multiple files, hence \hl{\boxed{\text{\textbf{Persistent TOTAL} HTTP response time = \textbf{2RTT + ALL files transmission time}}}}
+}
+
+\vspace{1.0em}\purplesec{HTTP Request Messages}
+
+\pinkbox{General Format}{
+  The image below provides the typical body of an HTTP request message. \\
+
+  Usually in the request line, the method is in all caps, such as \hlit{GET, POST, HEAD, PUT}. \\
+
+  \texttt{cr} and \texttt{lf} refer to \textbf{carriage return character} and \textbf{line-feed character} respectively, typically denoted as \texttt{\bs r} and \texttt{\bs f}. \\
+
+  \hl{A \textbf{blank line (CRLF CRLF)} indicates the \textbf{end of the header section}, not the entire message.} The optional \textbf{entity body} follows this blank line. \\
+
+  {\centering
+  \includegraphics[width=0.5\textwidth]{ch2_img/html_request.png}
+  \par
+  }
+}
+
+\pinkbox{Details About HTTP Request Message Methods}{
+  There are four main message methods:
+
+  \begin{itemize}
+    \item \textbf{POST:} Web page includes \textbf{form input}, with the user input sent from client to server in the \textbf{body of a HTTP POST} request
+    \item \textbf{GET:} It \textbf{sends data to a server}, oftentimes including \textbf{user data in the URL field} of a HTTP GET request message \textbf{following a '\texttt{?}'}
+    \item \textbf{HEAD:} \textbf{Requests headers} that would be returned \textbf{if} the URL were requested with HTTP GET
+    \item \textbf{PUT:} \textbf{Uploads a new file} to the server, and completely \textbf{replaces the file} that exists at the URL with content in the \textbf{body of a HTTP PUT} request
+  \end{itemize}
+}
+
+\begin{shuncmd}[Example of a Real HTTP Request Message]
+  GET /index.html HTTP/1.1 \r\n
+  Host: www.example.com \r\n
+  User-Agent: Chrome/133.0 \r\n
+  Accept-Language: en-US \r\n
+  \r\n
+  <body>
+  \r\n
+\end{shuncmd}
+
+\purplesec{HTTP Response Messages}
+
+\pinkbox{General Format}{
+  \texttt{<protocol><status code>} 
+
+  \texttt{<header lines>}
+ 
+  \texttt{<blank line>}
+ 
+  \texttt{<optional entity body>}
+}
+
+\pinkbox{HTTP Response Status Codes}{
+  The \textbf{status code} is what appears in the first line in the server-to-client response message. Here are some common sample codes:
+
+  \begin{itemize}
+    \item \textbf{200 OK:} Request \textbf{succeeded}, requested object later in this message
+    \item \textbf{301 Moved Permanently:} Requested \textbf{object moved}, new location specified later in this message (in \texttt{Location:} \texttt{field})
+    \item \textbf{400 Bad Request:} Request message \textbf{not understood by server}
+    \item \textbf{404 Not Found:} Requested document \textbf{not found} on this server
+    \item \textbf{505 HTTP Version Not Supported}
+  \end{itemize}
+}
+
+\begin{shuncmd}[Example of a Real HTTP Response Message]
+  HTTP/1.1 200 OK\r\n
+  Date: Fri, 17 Oct 2025 07:00:00 GMT\r\n
+  Server: Apache/2.4\r\n
+  Content-Type: text/html\r\n
+  Content-Length: 512\r\n
+  \r\n
+  <html>...</html>
+\end{shuncmd}  
+
+\vspace{1.0em}\purplesec{Cookies}
+
+\noindent Recall that the HTTP GET/response interaction is \textbf{stateless}. In order to maintain some states between transactions, websites and client browsers use \textbf{cookies}. To maintain cookies, we need four main components: \\
+
+\begin{itemize}
+  \item Cookie header line in \textbf{HTTP response} message
+  \item Cookie header line in \textbf{next HTTP request} message
+  \item Cookie file kept on \textbf{user's host} (managed by user's browser)
+  \item Backend \textbf{database at website}
+\end{itemize}
+
+\noindent They are typically used for \hlit{authorization, shopping carts, or ad recommendations}. Third party cookies (persistent cookies) allow for the same cookie value to be tracked across multiple websites, which is an invasion of privacy.
+
+\noindent The following image below shows how cookies are maintained:
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.6\textwidth]{ch2_img/cookies.jpg}
+\end{figure}
+
+\bluesec{Web Caches (i.e. Proxy Servers)}
+
+\pinkbox{Goal}{To satisfy client requests without requesting from the origin server, which helps reduce response time and \textbf{traffic on an institution's access link}}
+
+\pinkbox{Implementation}{
+  We have the user's broswer point to a \textbf{web cache}, then have the browser send all HTTPs to the web cache only. \textit{(More specifically, if the object is in the cache, the cache returns the object directly to the client. Else, it requests the object from the origin server, caches the object, then returns the object to the client.)} \\
+
+  The server tells cache about the object's allowed caching in the response header as either of the two: 
+
+  \begin{itemize}
+    \item \texttt{Cache-Control: max-age=<seconds>}
+    \item \texttt{Cache-Control: no-cache}
+  \end{itemize}
+
+  Thus, the web cache acts \hlbf{both as a client (to origin) and a server (to users)}.
+}
+
+\pinkbox{Calculation}{
+  Typically, the \boxed{\text{End-end delay = Internet delay + Access link delay + LAN delay}} , where the LAN delay is typically in microseconds. \\
+
+  What \textbf{caching minimizes is the number of times the access link is used}, which thus minimizes access link delay.
+}
+
+\pinkbox{Conditional GET}{
+  \textbf{Goal:} Don't send object if cache has up-to-date cached version, to reduce object transmission delay. \\
+
+  To do so, we maintain the following:
+
+  \begin{itemize}
+    \item \textbf{Client:} Store date of cached copy in HTTP request via \hl{\texttt{if-modified-since:} \texttt{<date>}}
+    \item \textbf{Server:} If cached copy is up-to-date, don't return an object, and send status code \hlbf{\texttt{HTTP/1.0 304 Not Modified}}. Otherwise, do a \textit{normal HTTP GET request}.
+  \end{itemize}
+}
+
+\vspace{1.0em}\bluesec{HTTP/2 and HTTP/3}
+
+\pinkbox{Key Goal}{
+  \textbf{Decrease delay} in \textbf{multi-object} HTTP requests.
+}
+
+\purplesec{HTTP/1.1}
+\noindent Introduced \textbf{multiple, pipelined GETs} over a \textit{single TCP connection} \\
+
+\begin{itemize}
+  \item Server responds \hlbf{in-order FCFS (First Come First Serve)} to GET requests
+  \item With FCFS, small objects may have to \hlbf{wait for transmission behind large objects} (which is known as \textbf{HOL, i.e. head-of-line, blocking})
+  \item Loss recovery (retransmitting lost TCP segments) stalls object transmission
+\end{itemize}
+
+\purplesec{HTTP/2}
+
+\noindent HTTP/2 increased flexibility at server in sending objects to client: \\
+\begin{itemize}
+  \item Transmission order of requested objects based on \textit{client-specified object priority} (may not be FCFS)
+  \item Push unrequested objects to the client
+  \item Divide objects into ``frames'', and \hlbf{schedule frames to mitigate HOL blocking}, as shown below
+\end{itemize}
+
+\vspace{-1.0em}\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.6\textwidth]{ch2_img/http2.png}
+\end{figure}
+
+\purplesec{HTTP/3}
+
+\noindent HTTP/2 over a single TCP connection means \textbf{recovery from packet loss} still \hl{stalls all object transmissions} \\
+
+\noindent HTTP/3 added \textbf{security} over vanilla TCP connection and \textbf{per object error-control and congestion-control} over UDP (hence minimizing packet loss recovery).
+
+\vspace{1.0em}\bluesec{E-Mail, SMTP, IMAP}
+
+\purplesec{Components}
+
+\noindent There are three major components: \\
+
+\begin{itemize}
+  \item \textbf{User agents:} The ``mail reader'' used to compose, edit, and read mail messages (such as \textit{Gmail, Outlook, mail client})
+  \item \textbf{Mail servers:} We have the \textbf{mailbox containing incoming messages} for the user, and \textbf{message queue of outgoing} (to be sent) mail messages
+  \item \textbf{Simple Mail Transfer (SMTP) Protocol:} Used between mail servers to send email messages, with the \textit{``client'' being the sending mail server, and ``server'' being the receiving mail server}
+\end{itemize}
+
+\purplesec{SMTP RFC 5321 (SMTP Protocol)}
+\noindent The SMTP uses TCP to \textit{reliably} transfer email message from client (mail server initiating connection) to server at \textbf{port 25} via command/response interaction like HTTP. \\
+
+\noindent There are three phases of transfer (as also shown in the image below): \\
+
+\vspace{-0.5em}\begin{enumerate}
+  \item SMTP \textbf{handshaking}
+  \item SMTP \textbf{transfer of messages}
+  \item SMTP \textbf{closure}
+\end{enumerate}
+
+\vspace{-1.5em}\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.3\textwidth]{ch2_img/smtp.png}
+\end{figure}
+
+\purplesec{SMTP Messages}
+
+\begin{shuncmd}[Example SMTP Interaction]
+S: 220 hamburger.edu
+"C: HELO crepes.fr"
+S: 250 Hello crepes.fr, pleased to meet you
+"C: MAIL FROM: <alice@crepes.fr>"
+S: 250 alice@crepes.fr... Sender ok
+"C: RCPT TO: <bob@hamburger.edu>"
+S: 250 bob@hamburger.edu... Recipient ok
+C: DATA
+S: 354 Enter mail, end with "." on a line by itself
+C: Do you like ketchup?
+C: How about pickles?
+C: .
+S: 250 Message accepted for delivery
+C: QUIT
+S: 221 hamburger.edu closing connection
+\end{shuncmd}
+
+\pinkbox{Ending of a Message}{
+  To end a message in SMTP, we use a line with only ``.''
+}
+
+\pinkbox{SMTP vs HTTP}{
+  \hl{HTTP is client pull whereas SMTP is client push}. Both have ASCII commands/response interaction and status codes, but HTTP has \textbf{each object} encapsulated in its \textbf{own response message}, whereas SMTP sends \textbf{multiple objects} in a \textbf{multipart message}. Thus, \hlbf{SMTP uses persistent connections}.
+}
+
+\pinkbox{SMTP Mail Messsage Format (RFC 2822)}{
+  \centering
+  \includegraphics[width=\textwidth]{ch2_img/smtp_msg.png}
+}
+
+\vspace{1.0em}\purplesec{Retrieval Protocols}
+
+\noindent Notice, \hlbf{SMTP is to send emails} only, we need \hlbf{IMAP (Internet Mail Access Protocol) to retrieve emails}. In fact, \textbf{HTTP} provides web-based interface on top of SMTP and IMAP to form a full sending and receiving mail system.
+
+\vspace{1.0em}\bluesec{Domain Name System (DNS)}
+
+\noindent The \textbf{Domain Name System (DNS)} is a \textbf{distributed database} in the hierarchy of many name servers. DNS servers communicate to resolve names (\hlbf{hostname-to-IP translation}) via \textbf{mappings}, and thus appears often in \textit{application-layer protocols}. DNS also provides services such as \textbf{host or mail server aliasing}. \\
+
+\noindent It tends to be physically \textbf{decentralized} because otherwise there will be too much traffic, and difficult maintance. This is especially because DNS needs to be \textit{reliable and secure}, as a backbone of the Internet. \\
+
+\purplesec{DNS Server Types}
+
+\noindent In fact, we can represent different types of DNS in a hierarchical database. Going from \textbf{top to down} based on proximity is how a corresponding IP address for an alias is found. As we can see, the servers are divided into four main types: \hlbf{root name, top-level domain (TLD), authoritative, and local servers}. Note, \hlbf{local DNS doesn't belong to the hierarchy below}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.9\textwidth]{ch2_img/dns_tree.png}
+\end{figure}
+
+\pinkbox{Root Name Servers}{
+  They act the official \textbf{last resort} of any name servers that cannot resolve a domain name. Root name servers know where to \textbf{find the Top-Level Domain (TLD)} servers and help initiate the DNS resolution process. There are 13 worldwide root name servers, managed by the ICANN (Internet Corporation for Assigned Names and Numbers).
+}
+
+\pinkbox{Top-Level Domain (TLD) Servers}{
+  Responsible for \textbf{\texttt{.com}, \texttt{.org}, \texttt{.net}, \texttt{.edu}, \texttt{.aero}, \texttt{.jobs}, \texttt{.museums}} and all \textbf{top-level country domains}, such as \texttt{.ca}, \texttt{.uk}, \texttt{.fr}, etc. They redirect you to the authoritative server.
+
+  \begin{itemize}
+    \item \textbf{Network Solutions:} Manages \textbf{\texttt{.com} and \texttt{.net}} TLDs.
+    \item \textbf{EDUCAUSE:} Manages \textbf{\texttt{.edu}} TLD, used by educational institutions.
+  \end{itemize}
+}
+
+\pinkbox{Authoritative Servers}{
+  These are the \textbf{organization's own DNS servers}, providing authoritative hostname to IP mappings for organization's named hosts. They are maintained by the organization or service provider.
+}
+
+\pinkbox{Local Servers}{
+  When a host makes a DNS query, it is sent to the local DNS server. The local DNS first answers by returning from its \textbf{local cache, and if unavailable, forwards request into the DNS hierarchy}. Each ISP has its own local DNS name server.
+}
+
+\purplesec{DNS Name Resolution: Iterated vs Recursive Query}
+
+\noindent \hl{\textbf{Iterated query} is like \textbf{``I don't know this name but I'll recommend someone who does''}}, whereas \\ \hl{\textbf{recursive query} is like \textbf{``I don't know this name, but I'll ask someone who does then get back to you''}.}
+
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{ch2_img/iterated_query.png}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{ch2_img/recursive_query.png}
+  \end{subfigure}
+\end{figure}
+
+\purplesec{Caching Information}
+
+\noindent Once a name server learns a mapping, it caches it, so that it can \textbf{immediately return} a cached mapping in response to a query, until its entry timeouts after some time---\textbf{Time to Live (TTL)}. TLD servers are typically cached in \textbf{local name servers}. However, cached entries may be \textbf{out-of-date}. If a named host changes its IP address, it may not be known Internet-wide until all TTLs expire. \\
+
+\purplesec{DNS Records}
+
+\noindent \textbf{Resource Records (RR)} are a distributed database, whose entries are \textbf{(\texttt{name}, \texttt{value}, \texttt{type}, \texttt{ttl})}. We type \hlbf{\texttt{nslookup}} in order to access the following:
+
+\begin{itemize}
+  \item \textbf{\texttt{type=A}}: \texttt{name} = \textbf{hostname}, \texttt{value} = \textbf{IP address}
+  \item \textbf{\texttt{type=NS}}: \texttt{name} = \textbf{domain} (e.g. \texttt{.com}), \texttt{value} = hostname of \textbf{domain's authoritative name server}
+  \item \textbf{\texttt{type=CNAME}}: \texttt{name} = \textbf{alias name} for some ``canonical'' (real) name, \texttt{value} = \textbf{canonical name}
+  \item \textbf{\texttt{type=MX}}: \texttt{value} = name of \textbf{SMTP mail server} associated with \texttt{name}
+\end{itemize}
+
+\purplesec{DNS Message Format}
+
+\noindent DNS query and reply messages both have the same format, as shown in the images below.
+
+\begin{figure}[h]
+  \centering
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{ch2_img/dns_msg1.png}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{ch2_img/dns_msg2.png}
+  \end{subfigure}
+\end{figure}
+
+\pinkbox{Example Setup for DNS}{
+  Say you have a new startup called ``Network Utopia''. \\
+
+  You must first create an \textbf{authoritative server locally}, perhaps with type \texttt{A} record at 
+  
+  \texttt{www.networkutopia.com} and type \texttt{MX} record for \texttt{networkutopia.com}. \\
+
+  Then, you must first register a name, such as \texttt{networkutopia.com} at \textbf{DNS registrar} (e.g. Network Solutions). You'll have to provide \textbf{names and IP addresses of authoritative name server}, and the registrar will insert RRs of \textbf{types \texttt{NS} and \texttt{A}} into the \texttt{.com} TLD server.
+}
+
+\purplesec{Security}
+\noindent One type of attacks are \textbf{DDoS (Distributed DoS) attacks}, which \textbf{bombard root servers with traffic}, so that they are not successful to date. They may also bombard TLD servers. \\
+
+\noindent Another type of attacks are \textbf{spoofing attacks}, which intercept DNS queries and return \textbf{bogus replies}.
+
+\vspace{1.0em}\bluesec{P2P Applications}
+
+\purplesec{File Distribution Time: Client-Server vs P2P}
+
+\pinkbox{File Distribution Example}{
+  How much time does it take to distribute a file of \textbf{size} $\mathbf{F}$ from one server to $\mathbf{N}$ \textbf{peers}? 
+
+  {
+    \centering
+    \includegraphics[width=0.6\textwidth]{ch2_img/file_distribution.png}
+    \par
+  }
+
+  \vspace{1.0em}
+  
+  For \textbf{client-server}, the server transmission is done by sequentially sending $N$ file copies. The time it takes to send one copy is $\frac{F}{u_s}$, so the time it takes to send $N$ copies is $\frac{NF}{u_s}$. Each client must download one copy, so let $d_\text{min}$ be the minimum client download rate, then the maximum client download rate is $\frac{F}{d_\text{min}}$, so the total time taken is $\hl{\boxed{D_{c-s} \geq \max\{\frac{NF}{u_s}, \frac{F}{d_\text{min}}\}}}$. \\
+
+  For \textbf{P2P}, the server must upload at least one copy, which takes time $\frac{F}{u_s}$. Each client must download a file copy, with maximum time $\frac{F}{d_\text{min}}$. Hence, all clients in total must download $NF$ bits, with limiting maximum upload rate as $u_s + \sum u_i$, i.e. both increase linearly in $N$. Thus, $\hl{\boxed{D_{P2P} \geq \max\{\frac{F}{u_s}, \frac{F}{d_\text{min}}, \frac{NF}{u_s + \sum u_i}\}}}$
+}
+
+\newpage
+
+\noindent Here is an example of the difference between the time elapsed for client-server and P2P.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.5\textwidth]{ch2_img/client_p2p.png}
+\end{figure}
+
+\vspace{-2.0em}\purplesec{P2P File Distribution: BitTorrent}
+
+\pinkbox{Overview}{
+  BitTorrent is a type of P2P file distribution, where each file is divided into \textbf{256Kb chunks}. 
+
+  \begin{itemize}
+    \item \textbf{Torrent:} A group of peers exchanging chunks in a file
+    \item \textbf{Tracker:} Tracks peers that participate in the torrent
+  \end{itemize}
+
+  When a peer joins a torrent, it has \textbf{no chunks}, but will \textbf{accumulate} them over time from other peers, and registers with tracker to get a list of peers, which connects it to neighbors. \\
+
+  While downloading, the peer must upload chunks to other peers. Once the peer has the entire file, it may \hlbf{selfishly leave or altruistically remain} in torrent. We say that peers \textbf{``churn''}, meaning they may enter and leave the torrent.
+}
+
+\pinkbox{Requesting Chunks}{
+  At any given time, different peers have different subsets of file chunks. Periodically, the user asks each peer for the list of chunks they have, they \textbf{request missing chunks from peers, rarest first}.
+}
+
+\pinkbox{Sending Chunks: Tit-For-Tat}{
+  BitTorrent encourages fairness through a \textbf{Tit-for-Tat} strategy:
+
+  \begin{itemize}
+    \item Each peer \textbf{uploads to the four peers} that send to it at the \textbf{highest rate} (the ``unchoked'' peers)
+    \item All other peers are \textbf{choked}, meaning they are temporarily denied uploads.
+    \item Every 10 seconds, the peer re-evaluates which peers are its top four.
+    \item Every 30 seconds, it \textbf{optimistically unchokes one random peer} to discover new partners.
+  \end{itemize}
+
+  \hl{Tit-for-tat resolves the issue of \textbf{free-riders (only downloading without uploading)}, by ensuring one} \hl{must upload before being able to download.}
+}
+
+\vspace{1.0em}\bluesec{Video Streaming and CDNs}
+
+\purplesec{Multimedia: Video --- Terminology}
+
+\begin{itemize}
+  \item Video: A sequence of images displayed at a \textbf{constant rate}
+  \item Digital Image: Array of pixels, each represented by bits
+  \item \hl{\textbf{Coding:} Use \textbf{redundancy} within and between images to \textbf{decrease the number of bits used} to} \\ \hl{encode images}; \textit{spatial coding refers to it done withiin an image, and temporal coding refers to it done betweeen one image and the next}
+  \item \textbf{Constant Bit Rate (CBR):} Video encoding rate is fixed
+  \item \textbf{Variable Bit Rate (VBR):} Video encoding rate changes according to \textit{spatial and temporal coding}
+\end{itemize}
+
+\purplesec{Streaming Stored Video}
+
+\pinkbox{Streaming vs Downloading}{
+  \hl{Goal: Continuous playback despite network delay and rate variation.}
+
+  \begin{itemize}
+    \item \textbf{Stored video:} File pre-recorded and stored at the server.
+    \item \textbf{Streaming:} Client begins playback before the entire file is downloaded.
+    \item \hl{\textbf{Client Buffer:} Stores several seconds of video to handle delay and jitter, so it plays smoother} \hl{without having to have a fixed bitrate.}
+  \end{itemize}
+}
+
+\vspace{-1.0em}\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\textwidth]{ch2_img/streaming.png}
+\end{figure}
+
+\newpage
+
+\purplesec{Streaming Multimedia: DASH}
+
+\pinkbox{DASH: Dynamic Adaptive Streaming over HTTP}{
+  \begin{itemize}
+    \item Video file encoded into several versions with \textbf{different bitrates}.
+    \item Each version is divided into \textbf{small chunks} (e.g. 2–10 seconds).
+    \item \textbf{Manifest File:} Lists available bitrates and chunk URLs.
+    \item \textbf{Client behavior:} 
+      \begin{itemize}
+        \item Downloads the manifest.
+        \item Measures available bandwidth.
+        \item Requests next chunk at the highest bitrate it can handle.
+      \end{itemize}
+  \end{itemize}
+
+  \hl{Advantage: \textbf{Adapts to changing network conditions} to avoid stalls.}
+}
+
+\purplesec{Content Distribution Networks (CDNs)}
+
+\pinkbox{Overview}{
+  A CDN \hlbf{distributes copies of content across geographically separated servers} to reduce latency and server load.
+
+  \begin{itemize}
+    \item \hl{\textbf{Enter Deep (Type 1):} CDN servers \textbf{placed inside ISPs}}, close to users (e.g. Akamai).
+    \item \hl{\textbf{Bring Home (Type 2):} CDN servers in a \textbf{few large data centers}} (e.g. Google, Netflix).
+    \item \textbf{User Redirection:} DNS or HTTP redirects map clients to the nearest or least-loaded CDN node.
+  \end{itemize}
+
+  \hl{Goal: Reduce RTT, balance load, and minimize origin-server traffic.}
+}
+
+\newpage
+
+\begin{tcolorbox}[colframe=green!60!blue, colback=green!20, title=\section*{Chapter 3 Summary}]
+\end{tcolorbox}
+
+\bluesec{Transport-Layer Services}
+
+\noindent Transport services provide logical communication between application processes running on different hosts. Two transport protocols available to internet applications are \textbf{TCP and UDP}. \\
+
+\pinkbox{Overview}{
+  In transport protocols, the \textbf{sender breaks application messages into segments} and passes it to the \textbf{nextwork layer}, whereas the \textbf{receiver reassembles segments into messages}, and passes it into the \textbf{application layer}.
+}
+
+\pinkbox{Transport Layer vs Network Layer}{
+  The \textbf{transport layer} is about the \textbf{communication between processes}, whereas the \textbf{network layer} is about the \textbf{communication between hosts}.
+}  
+
+\vspace{1.0em}\bluesec{Multiplexing and Demultiplexing}
+
+\noindent To allow multiple applications to use the network simultaneously, the transport layer performs both \textbf{multiplexing} and \textbf{demultiplexing}. \\
+
+\pinkbox{Definitions}{
+  \begin{itemize}
+    \item \textbf{Multiplexing (Sender side):} Gathering data from multiple sockets, adding transport headers (with port numbers and addresses), and passing the resulting segments to the network layer. \hlbf{Small to large transport.}
+    \item \textbf{Demultiplexing (Receiver side):} Using header information (source/destination IP and port numbers) to deliver received segments to the correct socket/application process. \hlbf{Large to small transport.}
+  \end{itemize}
+}
+
+\pinkbox{Header Information}{
+  Each transport segment includes:
+
+  \begin{itemize}
+    \item Source \textbf{IP address}
+    \item Destination \textbf{IP address}
+    \item Source \textbf{port number}
+    \item Destination \textbf{port number}
+  \end{itemize}
+
+  These fields are used by the receiver to identify the \textbf{appropriate receiving socket}.
+}
+
+\pinkbox{Connectionless vs Connection-Oriented Demultiplexing}{
+  \begin{itemize}
+    \item \textbf{UDP (Connectionless):} Each segment is directed to a socket based only on its \textbf{destination port number}.
+  \hl{Multiple senders sending to the same port reach the same receiving socket.}
+    \item \textbf{TCP (Connection-Oriented):} Each connection is identified by a unique \textbf{4-tuple}:
+    \[
+    \hl{(\text{Source IP}, \text{Source Port}, \text{Destination IP}, \text{Destination Port})}
+    \]
+    A server can distinguish multiple TCP connections on the same port (e.g., port 80 for multiple clients).
+  \end{itemize}
+}
+
+\vspace{1.0em}\bluesec{[Safe for Exam Criteria] UDP Checksum (Safety Addition)}
+
+\noindent The \textbf{UDP checksum} provides simple error detection. \hl{Its purpose is to detect bit errors, not correct them.} \\
+
+\pinkbox{Overview}{
+  \noindent It is computed by treating the UDP segment as a sequence of 16-bit integers, summing them using \textbf{one's-complement arithmetic}, and taking the \textbf{one's complement} of the result. \\
+
+  \noindent At the receiver, all words (including the checksum) are summed again---if the result is all 1s, no error is detected.
+}
+
+\end{document}
