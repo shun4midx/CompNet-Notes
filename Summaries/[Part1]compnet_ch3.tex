@@ -1,0 +1,74 @@
+\documentclass[12pt,a4paper]{article}
+\input{shun4imports}
+\input{shun4colors}
+\input{shun4cmds}
+
+\lhead{Computer Networks}
+\chead{Chapter 3 Summary}
+\rhead{Shun (@shun4midx)}
+
+\begin{document}
+\begin{center}
+  {\Large \bf Computer Networks: Chapter 3 Summary (MIDTERM VERSION)}\\[8pt]
+  \textbf{Author:} Shun (@shun4midx)
+\end{center}
+
+\bluesec{Transport-Layer Services}
+
+\noindent Transport services provide logical communication between application processes running on different hosts. Two transport protocols available to internet applications are \textbf{TCP and UDP}. \\
+
+\pinkbox{Overview}{
+  In transport protocols, the \textbf{sender breaks application messages into segments} and passes it to the \textbf{nextwork layer}, whereas the \textbf{receiver reassembles segments into messages}, and passes it into the \textbf{application layer}.
+}
+
+\pinkbox{Transport Layer vs Network Layer}{
+  The \textbf{transport layer} is about the \textbf{communication between processes}, whereas the \textbf{network layer} is about the \textbf{communication between hosts}.
+}  
+
+\vspace{1.0em}\bluesec{Multiplexing and Demultiplexing}
+
+\noindent To allow multiple applications to use the network simultaneously, the transport layer performs both \textbf{multiplexing} and \textbf{demultiplexing}. \\
+
+\pinkbox{Definitions}{
+  \begin{itemize}
+    \item \textbf{Multiplexing (Sender side):} Gathering data from multiple sockets, adding transport headers (with port numbers and addresses), and passing the resulting segments to the network layer. \hlbf{Small to large transport.}
+    \item \textbf{Demultiplexing (Receiver side):} Using header information (source/destination IP and port numbers) to deliver received segments to the correct socket/application process. \hlbf{Large to small transport.}
+  \end{itemize}
+}
+
+\pinkbox{Header Information}{
+  Each transport segment includes:
+
+  \begin{itemize}
+    \item Source \textbf{IP address}
+    \item Destination \textbf{IP address}
+    \item Source \textbf{port number}
+    \item Destination \textbf{port number}
+  \end{itemize}
+
+  These fields are used by the receiver to identify the \textbf{appropriate receiving socket}.
+}
+
+\pinkbox{Connectionless vs Connection-Oriented Demultiplexing}{
+  \begin{itemize}
+    \item \textbf{UDP (Connectionless):} Each segment is directed to a socket based only on its \textbf{destination port number}.
+  \hl{Multiple senders sending to the same port reach the same receiving socket.}
+    \item \textbf{TCP (Connection-Oriented):} Each connection is identified by a unique \textbf{4-tuple}:
+    \[
+    \hl{(\text{Source IP}, \text{Source Port}, \text{Destination IP}, \text{Destination Port})}
+    \]
+    A server can distinguish multiple TCP connections on the same port (e.g., port 80 for multiple clients).
+  \end{itemize}
+}
+
+\vspace{1.0em}\bluesec{[Safe for Exam Criteria] UDP Checksum (Safety Addition)}
+
+\noindent The \textbf{UDP checksum} provides simple error detection. \hl{Its purpose is to detect bit errors, not correct them.} \\
+
+\pinkbox{Overview}{
+  \noindent It is computed by treating the UDP segment as a sequence of 16-bit integers, summing them using \textbf{one’s-complement arithmetic}, and taking the \textbf{one’s complement} of the result.
+
+  \noindent At the receiver, all words (including the checksum) are summed again---if the result is all 1s, no error is detected.
+}
+
+\end{document}
